@@ -6,11 +6,7 @@
 [![Option 2](./assets/images/Option2.png)](https://site2.com)
 [![Option 3](./assets/images/Option3.png)](https://site3.com)
 
-## U Swing : Options
 
-<div class="grid grid-1-2" markdown>
-  ![](./assets/images/Option1.png)
-
-  <small>Site Web - Option 1</small><br>
-  **[Glidex](./exercices/glidex.md){.stretched-link .back}**
-</div>
+| [🚀 Site Projet 1](https://site1.com) | [![Option 2](./assets/images/Option2.png)](https://site2.com)| [![Option 3](./assets/images/Option3.png)](https://site3.com)|
+| :---: | :---: | :---: |
+| Description courte du site 1 | Mon travail créatif | Mes derniers articles |
