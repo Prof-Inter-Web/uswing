@@ -447,6 +447,12 @@ footer{background:#050709;border-top:1px solid var(--border);padding:4rem 48px 1
 .rev-r{opacity:0;transform:translateX(32px);transition:opacity .75s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1)}
 .rev-r.in{opacity:1;transform:none}
 
+
+.burger {
+  display: none; /* Masqué sur ordinateur */
+}
+
+
 @media(max-width:960px){
   #hero,#apropos,#contact,.cta-section,.ft-top,.galerie-hd{grid-template-columns:1fr}
   .sp-grid,.fcards,.t-grid{grid-template-columns:1fr}
@@ -471,23 +477,37 @@ footer{background:#050709;border-top:1px solid var(--border);padding:4rem 48px 1
   } */
 
 
-  /* On cache les liens par défaut et on les place en plein écran */
-  .nav-links {
-    display: none; /* Caché au départ */
-    flex-direction: column;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100vh;
-    background: rgba(9, 11, 16, 0.98); /* Fond sombre opaque */
-    backdrop-filter: blur(15px);
-    justify-content: center;
-    z-index: 600;
 
+  #nav {
+    justify-content: flex-end; /* Pousse le burger à droite */
+    padding: 0 20px;
   }
 
-  /* Classe qui sera ajoutée en JS pour ouvrir le menu */
-  .nav-links.active {
+  .nav-logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%); /* Logo au centre parfait */
+    z-index: 702;
+  }
+
+  .nav-links {
     display: flex;
+    visibility: hidden;
+    position: fixed;
+    top: 0; right: -100%; /* Caché à droite */
+    width: 80%; height: 100vh;
+    background: var(--bg2);
+    flex-direction: column;
+    justify-content: center;
+    gap: 3rem;
+    z-index: 600;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    border-left: 1px solid var(--faint);
+  }
+
+  .nav-links.active {
+    visibility: visible;
+    right: 0; /* Ouverture lente */
   }
 
   /* Style du Burger */
@@ -496,7 +516,7 @@ footer{background:#050709;border-top:1px solid var(--border);padding:4rem 48px 1
     flex-direction: column;
     gap: 6px;
     cursor: pointer;
-    z-index: 701; /* Doit être au-dessus de tout */
+    z-index: 701;
   }
 
   .burger span {
@@ -507,10 +527,12 @@ footer{background:#050709;border-top:1px solid var(--border);padding:4rem 48px 1
     transition: 0.3s;
   }
 
-  /* Animation du burger en 'X' quand ouvert */
+  /* Animation du X */
   .burger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
   .burger.active span:nth-child(2) { opacity: 0; }
   .burger.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+}
+
 
   @keyframes glitch3{0%,85%,100%{opacity:0;transform:none}87%{opacity:0;transform:none}}
   @keyframes glitch4{0%,88%,100%{opacity:0;transform:none}99%{opacity:0;transform:none}}
@@ -880,12 +902,9 @@ window.addEventListener('scroll',()=>{
 });
 
 function toggleMenu() {
-  const links = document.querySelector('.nav-links');
-  const burger = document.querySelector('.burger');
-  
-  links.classList.toggle('active');
-  burger.classList.toggle('active');
-}
+    document.querySelector('.nav-links').classList.toggle('active');
+    document.querySelector('.burger').classList.toggle('active');
+  }
 
 </script>
 </body>
