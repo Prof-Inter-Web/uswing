@@ -19,7 +19,7 @@
   --mint-dim:rgba(43,255,168,.1);
   --warm:  #c5ebff;
   --warm-d:#a0c7dd;
-  --bg:    #080608;
+  --bg:    #000000;
   --bg2:   #0E0B0E;
   --bg3:   #140F14;
   --card:  rgba(255,255,255,.03);
@@ -55,11 +55,30 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--warm);ove
   overflow: hidden;
   background: var(--bg); /* Ton fond noir */
 }
+.hero-video-bg{
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 60%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.hero-content{
+  position: relative;
+  z-index: 3;
+}
+
+.stage-container{
+  z-index: 2;
+  position: absolute;
+  inset: 0;
+}
 
 .stage-container {
   position: absolute;
   inset: 0;
-  z-index: 1; /* Derrière ton image de groupe */
+  z-index: 2; /* Derrière ton image de groupe */
   pointer-events: none;
   overflow: hidden;
 }
@@ -134,10 +153,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--warm);ove
   0%, 12%, 14%, 30%, 32%, 70%, 72%, 100% { opacity: 0; }
   13%, 31%, 71% { opacity: 1; backdrop-filter: brightness(1.4) contrast(1.2); }
 }
-
-
-
-
 
 
 /* Horizontal scan line */
@@ -495,6 +510,14 @@ footer{background:#050406;border-top:1px solid var(--bdr);padding:4rem 52px 1.5r
   .ap-l,.ap-r{padding:4rem 2.5rem}
   .cta-s{padding:4rem 24px}
   
+.hero-video-bg{
+  position: absolute;
+  top: 5%;
+  right: 0;
+  width: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
 
 .hero-left {
     padding: 35vh 0 0;
@@ -516,12 +539,12 @@ footer{background:#050406;border-top:1px solid var(--bdr);padding:4rem 52px 1.5r
     right: 0;
 }
     #hero {
-    flex-direction: column-reverse; /* Met l'image (2ème div) en haut */
+    flex-direction: column; /* Met l'image (2ème div) en haut */
     justify-content: flex-start;
     padding: 60px 7% 40px;
     height: auto;
     min-height: initial; /* Permet à la page de défiler naturellement */
-  } */
+  } 
 
   /* Espace sous l'image pour ne pas coller au texte */
   #hero > div:last-child {
@@ -610,6 +633,7 @@ footer{background:#050406;border-top:1px solid var(--bdr);padding:4rem 52px 1.5r
   .burger.active span:nth-child(2) { opacity: 0; }
   .burger.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 }
+
 </style>
 </head>
 <body>
@@ -669,6 +693,11 @@ footer{background:#050406;border-top:1px solid var(--bdr);padding:4rem 52px 1.5r
 
 <!-- ═══ HERO ═══ -->
 <section id="hero">
+  <video autoplay loop muted playsinline class="hero-video-bg">
+      <source src="./assets/videos/uswing.mp4" type="video/mp4">
+    </video>
+
+
   <div class="stage-container">
     <div class="beam b-blue"></div>
     <div class="beam b-green"></div>
@@ -700,9 +729,11 @@ footer{background:#050406;border-top:1px solid var(--bdr);padding:4rem 52px 1.5r
       </div>
     </div>
 
-  <div class="hero-pic">
+  
+
+  <!-- <div class="hero-pic">
     <img class="hero-band" src="./assets/images/neon-duo4.png" alt="">
-  </div>
+  </div> -->
     <!-- <div class="hero-right">
       <div class="preview-wrap">
         <div class="pw-header"><span class="pw-title">Nos formules</span><span class="pw-count">6 options</span></div>
