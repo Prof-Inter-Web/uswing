@@ -10,28 +10,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root{
-  --rose:   #E8A0B4;
-  --rose-d: #C4607E;
-  --rose-l: #F5C8D8;
-  --rose-xl:#FDE8EF;
+  --rose:   #C9A84C;
+  --rose-d: #81671d;
+  --rose-l: #846d30;
+  --rose-xl:#87784d;
   --rose-dim:rgba(232,160,180,.12);
-  --sap:    #2C4A8C;
-  --sap-l:  #4B6FB5;
-  --sap-xl: #8FAEE0;
+  --sap:    #7e2c8c;
+  --sap-l:  #a34bb5;
+  --sap-xl: #ce8fe0;
   --sap-dim:rgba(44,74,140,.15);
-  --rg:     #D4A574;
+  --rg:     #dbc975;
   --rg-l:   #ECC49A;
   --rg-dim: rgba(212,165,116,.12);
   --bg:     #06060A;
   --bg2:    #0C0B12;
-  --bg3:    #121020;
-  --bg4:    #0E0C18;
+  --bg3:    #2d240a57;
+  --bg4:    #281f0841;
   --panel:  rgba(255,255,255,.03);
   --bdr:    rgba(255,255,255,.07);
   --bdr2:   rgba(232,160,180,.18);
-  --ink:    #F0EAF5;
-  --muted:  #4A4260;
-  --ash:    #8A8298;
+  --ink:    #f5f4ea;
+  --muted:  #c9a84c41;
+  --ash:    #989682;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -181,13 +181,13 @@ h2.dsp .sk{-webkit-text-stroke:1px rgba(232,160,180,.35);color:transparent}
    ABOUT / HISTOIRE
 ═══════════════════════════════════ */
 #histoire{display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden;padding:0}
-.hist-left{background:linear-gradient(160deg,#0a0614,#14082A);padding:6rem 5%;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.hist-left{background:linear-gradient(160deg,#c9a84c41,#45381323);padding:6rem 5%;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
 .hl-deco{position:absolute;bottom:-3rem;right:-3rem;font-family:'Playfair Display',serif;font-size:16rem;font-weight:900;font-style:italic;color:rgba(232,160,180,.04);pointer-events:none;line-height:1;letter-spacing:-.1em}
 .hist-left .ey{color:var(--rose)}.hist-left .ey::before{background:var(--rose)}
 .hist-title{font-family:'Playfair Display',serif;font-size:clamp(2.5rem,4vw,4rem);font-weight:900;line-height:.9;letter-spacing:-.04em;color:var(--ink);margin-bottom:1.5rem}
 .hist-title em{font-style:italic;color:var(--rose)}
 .hist-body{font-size:.92rem;font-weight:300;color:var(--ash);line-height:1.9;margin-bottom:2.5rem}
-.hist-quote{border-left:2px solid var(--rose);padding:1.2rem 1.8rem;font-family:'Playfair Display',serif;font-size:1.1rem;font-style:italic;color:rgba(232,160,180,.6);line-height:1.65;background:rgba(232,160,180,.04)}
+.hist-quote{border-left:2px solid var(--rose);padding:1.2rem 1.8rem;font-family:'Playfair Display',serif;font-size:1.1rem;font-style:italic;color:var(--rose);line-height:1.65;background:rgba(232,160,180,.04)}
 
 .hist-right{padding:6rem 5%;display:flex;flex-direction:column;justify-content:center;gap:1rem;background:var(--bg3)}
 .hr-stat{background:var(--panel);border:1px solid var(--bdr);padding:2rem;position:relative;overflow:hidden;transition:border-color .25s,background .25s}
@@ -207,10 +207,10 @@ h2.dsp .sk{-webkit-text-stroke:1px rgba(232,160,180,.35);color:transparent}
 /* MAIN FEATURE */
 .spec-feature{position:relative;min-height:640px;display:flex;align-items:flex-end;margin-bottom:3px;overflow:hidden}
 .sf-bg{position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(6,6,10,.98) 0%,rgba(20,8,42,.55) 45%,rgba(44,74,140,.08) 100%),
-  radial-gradient(ellipse at 60% 30%,rgba(232,160,180,.06) 0%,transparent 55%),
-  repeating-linear-gradient(60deg,transparent,transparent 70px,rgba(232,160,180,.015) 70px,rgba(232,160,180,.015) 71px),
-  #060614;
+  background:linear-gradient(to top,rgba(132, 121, 39, 0.264) 0%,rgba(42, 39, 8, 0.55) 45%,rgba(140, 129, 44, 0.08) 100%),
+  radial-gradient(ellipse at 60% 30%,rgba(185, 159, 29, 0.06) 0%,transparent 55%),
+  repeating-linear-gradient(60deg,transparent,transparent 70px,rgba(232, 224, 160, 0.015) 70px,rgba(232, 220, 160, 0.015) 71px),
+  #141406;
   transition:transform .8s cubic-bezier(.25,.46,.45,.94)}
 .spec-feature:hover .sf-bg{transform:scale(1.02)}
 .sf-content{position:relative;z-index:2;padding:4rem 5%;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:end;width:100%}
@@ -233,8 +233,8 @@ h2.dsp .sk{-webkit-text-stroke:1px rgba(232,160,180,.35);color:transparent}
 /* SECOND SPECTACLE */
 .spec-modern{position:relative;min-height:580px;display:flex;align-items:flex-end;overflow:hidden}
 .sm-bg{position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(6,6,10,.98) 0%,rgba(12,8,36,.6) 45%,rgba(75,111,181,.06) 100%),
-  repeating-linear-gradient(-60deg,transparent,transparent 70px,rgba(44,74,140,.025) 70px,rgba(44,74,140,.025) 71px),
+  background:linear-gradient(to top,rgba(15, 15, 10, 0.98) 0%,rgba(36, 34, 8, 0.6) 45%,rgba(181, 163, 75, 0.06) 100%),
+  repeating-linear-gradient(-60deg,transparent,transparent 70px,rgba(140, 129, 44, 0.025) 70px,rgba(140, 132, 44, 0.025) 71px),
   #08061A;
   transition:transform .8s cubic-bezier(.25,.46,.45,.94)}
 .spec-modern:hover .sm-bg{transform:scale(1.02)}
