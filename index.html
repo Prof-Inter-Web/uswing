@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U Swing — Studio Web · Portail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:    #07080D;
+  --bg2:   #0C0D14;
+  --bg3:   #11121C;
+  --bdr:   rgba(255,255,255,.06);
+  --ink:   #E8ECF5;
+  --muted: #3A3D52;
+  --ash:   #6A6E85;
+
+  /* accent palette — one per card */
+  --a1: #00E5FF; /* cyan  — cyberpunk */
+  --a2: #C8F135; /* lime  — creative  */
+  --a3: #0277b7; /* orange — aurora   */
+  --a4: #FF2D78; /* mag   — editorial */
+  --a5: #C9A84C; /* gold  — nuits dorées */
+  --a6: #2BFFA8; /* mint  — blanc bleu */
+  --a7: #C0182A; /* rouge — blanc rouge */
+  --a8: #A78BFA; /* violet — noir or  */
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased;cursor:none;min-height:100vh}
+
+/* ── CANVAS BG ── */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ── GRAIN ── */
+body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:160px}
+
+/* ── CURSOR ── */
+.cur{width:8px;height:8px;border-radius:50%;position:fixed;z-index:9999;pointer-events:none;transform:translate(-50%,-50%);background:#040b2f;mix-blend-mode:difference;transition:width .3s,height .3s}
+.cur.big{width:60px;height:60px}
+.cur-ring{width:36px;height:36px;border:1px solid rgba(255, 255, 255, 0.2);border-radius:50%;position:fixed;z-index:9998;pointer-events:none;transform:translate(-50%,-50%)}
+
+/* ── LAYOUT ── */
+.portal{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column}
+
+/* ── HEADER ── */
+header{padding:2.5rem 5%;display:flex;justify-content:space-between;align-items:center;}
+.h-logo{font-family:'Unbounded',sans-serif;font-size:2.2rem;font-weight:900;letter-spacing:-.04em;color:var(--ink)}
+.h-logo em{color:transparent;-webkit-text-stroke:1px rgba(156,255,0,0.552);font-style:normal}
+.h-meta{display:flex;align-items:center;gap:1.5rem}
+.h-dot{width:6px;height:6px;border-radius:50%;background:#2BFFA8;box-shadow:0 0 10px #2BFFA8;animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.h-status{font-size:.65rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--ash)}
+.h-count{font-family:'Unbounded',sans-serif;font-size:.75rem;font-weight:700;color:var(--ink);background:var(--bdr);border:1px solid rgba(255,255,255,.06);padding:.3rem .8rem;border-radius:100px}
+
+/* ── HERO TEXT ── */
+.hero-zone{padding:5rem 5% 10rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:end}
+.hz-left{}
+.hz-pre{font-size:.62rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--ash);margin-bottom:1.2rem;display:flex;align-items:center;gap:10px}
+.hz-pre::before{content:'';width:20px;height:1px;background:var(--ash)}
+.hz-title{font-family:'Unbounded',sans-serif;font-size:clamp(2.5rem,5vw,5.5rem);font-weight:900;line-height:.88;letter-spacing:-.05em;color:var(--ink);margin-bottom:.6rem}
+.hz-title .grd{background:linear-gradient(135deg,#00E5FF,#C8F135,#FF6B2B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradShift 6s ease-in-out infinite}
+@keyframes gradShift{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+.hero-band{position: absolute; top: 0; right: 5%; width: 60%; align-self:start; justify-self:end; border-radius: 8px;}
+.hz-title .outline{-webkit-text-stroke:1.5px rgba(166, 255, 0, 0.552);color:transparent}
+.hz-sub{font-size:.95rem;font-weight:300;color:var(--ash);line-height:1.85;max-width:480px}
+.hz-right{display:flex;flex-direction:column;gap:1rem;align-items:flex-end}
+.hz-stat{text-align:right}
+.hz-stat-n{font-family:'Unbounded',sans-serif;font-size:3rem;font-weight:900;letter-spacing:-.08em;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.2);display:block;line-height:1}
+.hz-stat-l{font-size:.6rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.hz-divider{width:1px;height:40px;background:linear-gradient(to bottom,transparent,var(--bdr),transparent)}
+
+/* ── FILTER BAR ── */
+.filter-bar{padding:0 5% 3rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.fb-label{font-size:.62rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-right:.4rem}
+.fb-btn{font-family:'DM Sans',sans-serif;font-size:.65rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:transparent;border:1px solid var(--bdr);color:var(--ash);padding:.4rem 1rem;border-radius:100px;cursor:none;transition:all .2s}
+.fb-btn:hover,.fb-btn.active{border-color:rgba(255,255,255,.3);color:var(--ink);background:rgba(255,255,255,.05)}
+.fb-btn.active{background:var(--ink);color:var(--bg)}
+
+/* ── CARDS GRID ── */
+.cards-zone{padding:0 5% 5rem;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,.04)}
+
+/* CARD */
+.site-card{background:var(--bg2);position:relative;overflow:hidden;cursor:none;transition:background .3s}
+.site-card:hover{background:var(--bg3)}
+.site-card:hover .card-preview{transform:scale(1.04)}
+.site-card:hover .card-arrow{transform:translate(4px,-4px)}
+.site-card:hover .card-overlay{opacity:1}
+
+/* Color accent bar top */
+.card-accent{position:absolute;top:0;left:0;right:0;height:2px;transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.site-card:hover .card-accent{transform:scaleX(1)}
+
+/* Preview window */
+.card-preview-wrap{height:220px;overflow:hidden;position:relative;border-bottom:1px solid var(--bdr)}
+.card-preview{width:100%;height:100%;display:flex;align-items:center;justify-content:center;transition:transform .6s cubic-bezier(.25,.46,.45,.94);position:relative}
+.card-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s;z-index:2}
+.card-launch{font-family:'Unbounded',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.6rem 1.4rem;border-radius:100px;border:none;cursor:none;transition:transform .2s}
+
+/* Preview content — unique per card */
+.preview-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1.5rem;position:relative}
+
+/* Cyberpunk preview */
+.prev-cyber{background:linear-gradient(135deg,#070810,#0D1018);position:relative;overflow:hidden}
+.prev-cyber::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.04) 1px,transparent 1px);background-size:30px 30px}
+.prev-cyber .prev-title{font-family:'Unbounded',sans-serif;font-size:2.2rem;font-weight:900;letter-spacing:-.05em;color:#00E5FF;text-shadow:0 0 20px rgba(0,229,255,.5);z-index:1;position:relative}
+.prev-cyber .prev-sub{position:absolute;bottom:.8rem;right:.8rem;font-size:.55rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(0,229,255,.4)}
+.prev-cyber .prev-line{position:absolute;top:50%;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,rgba(255,45,120,.2),rgba(0,229,255,.2),transparent)}
+
+/* Creative lime preview */
+.prev-creative{background:linear-gradient(135deg,#080B0E,#111318);overflow:hidden;position:relative}
+.prev-creative::before{content:'';position:absolute;top:-50%;right:-30%;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(200,241,53,.08),transparent 70%)}
+.prev-creative .prev-title{font-family:'Unbounded',sans-serif;font-size:2.2rem;font-weight:900;letter-spacing:-.05em;-webkit-text-stroke:1.5px #C8F135;color:transparent;filter:drop-shadow(0 0 12px rgba(200,241,53,.3));z-index:1;position:relative}
+.prev-creative .prev-sub{position:absolute;bottom:.8rem;right:.8rem;font-size:.55rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(200,241,53,.35)}
+.prev-creative .pill{position:absolute;top:.8rem;left:.8rem;background:#C8F135;color:#111;font-size:.5rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:100px}
+
+/* Aurora orange preview */
+.prev-aurora{background:linear-gradient(135deg,#080608,#100A08);overflow:hidden;position:relative}
+.prev-aurora::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 50% 0%,rgba(43, 255, 47, 0.12),transparent 70%)}
+.prev-aurora .prev-title{font-family:'Unbounded',sans-serif;font-size:2.2rem;font-weight:900;letter-spacing:-.05em;background:linear-gradient(135deg,#2bb5ff,#0277b7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;z-index:1;position:relative;filter:drop-shadow(0 0 15px #0277b7)}
+.prev-aurora .prev-sub{position:absolute;bottom:.8rem;right:.8rem;font-size:.55rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(43, 255, 96, 0.35)}
+.prev-aurora .beam{position:absolute;top:0;left:40%;width:1px;height:100%;background:linear-gradient(to bottom,rgba(43, 255, 85, 0.2),transparent);transform:skewX(-5deg)}
+
+/* Nuits Dorées preview */
+.prev-nuits{background:linear-gradient(135deg,#0A0808,#160E0E);overflow:hidden;position:relative}
+.prev-nuits::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 60% 40%,rgba(201,168,76,.08),transparent 65%)}
+.prev-nuits .prev-title{font-family:'Playfair Display',serif;font-size:4rem;font-weight:900;font-style:italic;letter-spacing:-.02em;color:#C9A84C;text-shadow:0 0 30px rgba(201,168,76,.35);z-index:1;position:relative}
+.prev-nuits .prev-sub{position:absolute;bottom:.8rem;right:.8rem;font-size:.55rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(201,168,76,.3)}
+.prev-nuits .prev-diamond{position:absolute;top:.8rem;left:.8rem;width:8px;height:8px;background:rgba(201,168,76,.5);transform:rotate(45deg)}
+
+/* Blanc bleu preview */
+.prev-bleu{background:linear-gradient(135deg,#F4F7FE,#EEF3FD);overflow:hidden;position:relative}
+.prev-bleu .prev-title{font-family:'Unbounded',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-.05em;color:#1B4FD8;z-index:1;position:relative}
+.prev-bleu .prev-sub{position:absolute;bottom:.8rem;right:.8rem;font-size:.55rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(27,79,216,.3)}
+.prev-bleu .prev-ball{position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(27,79,216,.06)}
+
+/* Blanc rouge preview */
+.prev-rouge{background:linear-gradient(135deg,#FDF5F5,#FDEEF0);overflow:hidden;position:relative}
+.prev-rouge .prev-title{font-family:'Unbounded',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-.05em;color:#C0182A;z-index:1;position:relative}
+.prev-rouge .prev-sub{position:absolute;bottom:.8rem;right:.8rem;font-size:.55rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(192,24,42,.3)}
+.prev-rouge .prev-ball{position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(192,24,42,.06)}
+
+/* Noir or preview */
+.prev-noir{background:linear-gradient(135deg,#080808,#1C1C1C);overflow:hidden;position:relative}
+.prev-noir .prev-title{font-family:'Cormorant Garamond',serif;font-size:4rem;font-weight:700;font-style:italic;letter-spacing:-.02em;color:#ffffff;text-shadow:0 0 20px rgba(201,168,76,.3);z-index:1;position:relative}
+.prev-noir .prev-sub{position:absolute;bottom:.8rem;right:.8rem;font-size:.55rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(201,168,76,.3)}
+.prev-noir::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(201,168,76,.03) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(201,168,76,.03) 40px)}
+
+
+/* Éditorial preview */
+.prev-edito{background:linear-gradient(135deg,#F5F0E8,#EDE7D9);overflow:hidden;position:relative}
+.prev-edito .prev-title{font-family:'Fraunces',serif;font-size:2.5rem;font-weight:900;font-style:italic;letter-spacing:-.05em;color:#C4522A;z-index:1;position:relative}
+.prev-edito .prev-sub{position:absolute;bottom:.8rem;right:.8rem;font-size:.55rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(196,82,42,.3)}
+.prev-edito::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(196,82,42,.02) 20px,rgba(196,82,42,.02) 21px)}
+
+/* CARD BODY */
+.card-body{padding:1.6rem 2rem 2rem}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem}
+.card-info{}
+.card-num{font-family:'Unbounded',sans-serif;font-size:.55rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+.card-title{font-family:'Unbounded',sans-serif;font-size:1rem;font-weight:900;letter-spacing:-.04em;color:var(--ink);line-height:1.1}
+.card-arrow{width:32px;height:32px;border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;transition:transform .3s,border-color .3s,background .3s;flex-shrink:0}
+.site-card:hover .card-arrow{border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.05)}
+.card-desc{font-size:.78rem;font-weight:300;color:var(--ash);line-height:1.7;margin-bottom:1.2rem}
+.card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1.5rem}
+.ctag{font-size:.58rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--bdr);padding:3px 8px;border-radius:100px}
+.card-footer{display:flex;justify-content:space-between;align-items:center}
+.card-style-badge{font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:100px}
+.card-open-btn{font-family:'DM Sans',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:transparent;border:1px solid var(--bdr);color:var(--ash);padding:.45rem 1.1rem;border-radius:100px;cursor:none;transition:all .25s;text-decoration:none;display:inline-block}
+.site-card:hover .card-open-btn{border-color:rgba(255,255,255,.2);color:var(--ink)}
+
+/* TICKER */
+.ticker-zone{overflow:hidden;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);padding:12px 0;background:var(--bg2)}
+.tk-inner{display:inline-flex;animation:tkRoll 30s linear infinite}
+.tk-item{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:0 2.5rem;display:inline-flex;align-items:center;gap:2.5rem;white-space:nowrap;color:rgba(255,255,255,.08)}
+.tk-item span{font-size:.6rem}
+@keyframes tkRoll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── FOOTER ── */
+.portal-footer{padding:2.5rem 5%;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--bdr);flex-wrap:wrap;gap:1rem}
+.pf-left{font-size:.7rem;font-weight:500;color:var(--muted)}
+.pf-left span{color:var(--ash)}
+.pf-right{display:flex;align-items:center;gap:2rem}
+.pf-link{font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+.pf-link:hover{color:var(--ink)}
+
+/* FADE IN */
+.fi{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.fi.in{opacity:1;transform:none}
+
+
+
+
+/* Le style de votre mot "musical" */
+.outline {
+  position: relative;
+  display: inline-block;
+  font-weight: bold;
+  /* Gardez vos couleurs et contours ici */
+}
+
+/* Le nouveau style pour les multiples étoiles */
+.star {
+  position: absolute;
+  color: gold;
+  font-size: 18px;
+  pointer-events: none;
+  opacity: 0;
+  animation: sparkle linear infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+
+
+
+
+/* RESPONSIVE */
+@media(max-width:1100px){.cards-zone{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){
+  .cards-zone{grid-template-columns:1fr}
+  .hero-zone{grid-template-columns:1fr}
+  .hz-right{display:none}
+}
+
+/* Font for editorial card preview */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,900&family=Fraunces:ital,opsz,wght@1,9..144,900&family=Cormorant+Garamond:ital,wght@1,700&display=swap');
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="cur" id="cur"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<div class="portal">
+
+  <!-- ── HEADER ── -->
+  <header>
+    <div class="h-logo">U <em>Swing</em> Studio</div>
+    <div class="h-meta">
+      <div class="h-dot"></div>
+      <span class="h-status">5 sites disponibles</span>
+      <span class="h-count">Groupe de musique</span>
+    </div>
+  </header>
+
+
+
+  <!-- ── HERO ── -->
+  <div class="hero-zone">
+    <div class="hz-left fi">
+      <p class="hz-pre">U Swing · Collections de sites</p>
+      <h1 class="hz-title">
+        Choisissez<br>
+        votre<br>
+        <span class="grd">univers</span><br>
+        <span class="outline">musical</span>
+      </h1>
+    </div>
+    <div>
+    <img class="hero-band" src="./assets/images/band6.png" alt="">
+  </div>
+  </div>
+
+
+
+  <!-- ── CARDS ── -->
+  <div class="cards-zone" id="cards-zone">
+
+    <!-- 1. U Chill -->
+    <div class="site-card fi" data-tags="dark moderne" style="transition-delay:.05s" onclick="openSite('uchill.html')">
+      <div class="card-accent" style="background:linear-gradient(to right,var(--a1),transparent)"></div>
+      <div class="card-preview-wrap">
+        <div class="card-preview prev-cyber preview-inner">
+          <div class="prev-line"></div>
+          <span class="prev-title">U CHILL</span>
+          <span class="prev-sub">Lounge</span>
+        </div>
+        <div class="card-overlay" style="background:rgba(0,229,255,.06)">
+          <button class="card-launch" style="background:var(--a1);color:#070810">Ouvrir le site →</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <div class="card-info">
+            <p class="card-num">01 · Musique d'ambience</p>
+            <p class="card-title">Duo de musique lounge</p>
+          </div>
+          <div class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></div>
+        </div>
+        <p class="card-desc">Cyan + Magenta + Ambre · Scanlines animées · Curseur crosshair · Glitch sur les titres · Galerie lightbox complète</p>
+        <div class="card-tags">
+          <span class="ctag" style="color:var(--a1);border-color:rgba(0,229,255,.2)">#00E5FF Cyan</span>
+          <span class="ctag" style="color:var(--a4);border-color:rgba(255,45,120,.2)">#FF2D78 Magenta</span>
+          <span class="ctag" style="color:#FFB800;border-color:rgba(255,184,0,.2)">#FFB800 Ambre</span>
+        </div>
+        <div class="card-footer">
+          <span class="card-style-badge" style="background:rgba(0,229,255,.1);color:var(--a1);border:1px solid rgba(0,229,255,.2)">Sombre · Moderne</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. U Swing -->
+    <div class="site-card fi" data-tags="dark moderne" style="transition-delay:.1s" onclick="openSite('uswing.html')">
+      <div class="card-accent" style="background:linear-gradient(to right,var(--a2),transparent)"></div>
+      <div class="card-preview-wrap">
+        <div class="card-preview prev-creative preview-inner">
+          <!-- <span class="pill">NEW</span> -->
+          <span class="prev-title">U SWING</span>
+          <span class="prev-sub">Quatuor ou Quintet</span>
+        </div>
+        <div class="card-overlay" style="background:rgba(200,241,53,.05)">
+          <button class="card-launch" style="background:var(--a2);color:#080B0E">Ouvrir le site →</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <div class="card-info">
+            <p class="card-num">02 · Ambience + Danse</p>
+            <p class="card-title">Quatuor ou Quintet</p>
+          </div>
+          <div class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></div>
+        </div>
+        <p class="card-desc">Lime + Violet + Corail · Particules canvas · Anneaux rotatifs · Marquee multicolore · Cards avec glow coloré</p>
+        <div class="card-tags">
+          <span class="ctag" style="color:var(--a2);border-color:rgba(200,241,53,.2)">#C8F135 Lime</span>
+          <span class="ctag" style="color:var(--a8);border-color:rgba(167,139,250,.2)">#A78BFA Violet</span>
+          <span class="ctag" style="color:var(--a4);border-color:rgba(255,45,120,.2)">#FF6B6B Corail</span>
+        </div>
+        <div class="card-footer">
+          <span class="card-style-badge" style="background:rgba(200,241,53,.08);color:var(--a2);border:1px solid rgba(200,241,53,.18)">Sombre · Créatif</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. U Dance -->
+    <div class="site-card fi" data-tags="dark moderne" style="transition-delay:.15s" onclick="openSite('udance.html')">
+      <div class="card-accent" style="background:linear-gradient(to right,var(--a3),transparent)"></div>
+      <div class="card-preview-wrap">
+        <div class="card-preview prev-aurora preview-inner">
+          <div class="beam"></div>
+          <span class="prev-title">U DANCE</span>
+          <span class="prev-sub">Danse</span>
+        </div>
+        <div class="card-overlay" style="background:rgba(255,107,43,.06)">
+          <button class="card-launch" style="background:var(--a3);color:#080608">Ouvrir le site →</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <div class="card-info">
+            <p class="card-num">03 · Musique de danse</p>
+            <p class="card-title">Duo de musique de danse</p>
+          </div>
+          <div class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></div>
+        </div>
+        <p class="card-desc">Orange + Menthe + Ivoire · Projecteurs de scène canvas · Typo Unbounded · Galerie lightbox avec upload</p>
+        <div class="card-tags">
+          <span class="ctag" style="color:var(--a3);border-color:rgba(255,107,43,.22)">#FF6B2B Orange</span>
+          <span class="ctag" style="color:var(--a6);border-color:rgba(43,255,168,.2)">#2BFFA8 Menthe</span>
+          <span class="ctag" style="color:#FFF5E6;border-color:rgba(255,245,230,.12)">#FFF5E6 Ivoire</span>
+        </div>
+        <div class="card-footer">
+          <span class="card-style-badge" style="background:rgba(255,107,43,.1);color:var(--a3);border:1px solid rgba(255,107,43,.2)">Sombre · Stage</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Crooner -->
+    <div class="site-card fi" data-tags="dark thematique" style="transition-delay:.2s" onclick="openSite('crooner.html')">
+      <div class="card-accent" style="background:linear-gradient(to right,var(--a5),transparent)"></div>
+      <div class="card-preview-wrap">
+        <div class="card-preview prev-nuits preview-inner">
+          <div class="prev-diamond"></div>
+          <span class="prev-title">Crooner</span>
+          <span class="prev-sub">Spectacle · Crooner</span>
+        </div>
+        <div class="card-overlay" style="background:rgba(201,168,76,.05)">
+          <button class="card-launch" style="background:var(--a5);color:#0A0808">Ouvrir le site →</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <div class="card-info">
+            <p class="card-num">04 · Spectacle Thématique</p>
+            <p class="card-title">Spectacle thématique Crooner</p>
+          </div>
+          <div class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></div>
+        </div>
+        <p class="card-desc">Or + Bordeaux + Ivoire · Rideaux de scène animés · Spectacles Gatsby & Crooner · Playfair Display dramatique</p>
+        <div class="card-tags">
+          <span class="ctag" style="color:var(--a5);border-color:rgba(201,168,76,.22)">#C9A84C Or</span>
+          <span class="ctag" style="color:#9B3040;border-color:rgba(107,31,42,.3)">#6B1F2A Bordeaux</span>
+          <span class="ctag" style="color:#F5EDD8;border-color:rgba(245,237,216,.12)">#F5EDD8 Ivoire</span>
+        </div>
+        <div class="card-footer">
+          <span class="card-style-badge" style="background:rgba(201,168,76,.08);color:var(--a5);border:1px solid rgba(201,168,76,.18)">Sombre · Gatsby</span>
+        </div>
+      </div>
+    </div>
+
+    
+
+    <!-- 7. Gatsby -->
+    <div class="site-card fi" data-tags="dark thematique" style="transition-delay:.35s" onclick="openSite('gatsby.html')">
+      <div class="card-accent" style="background:linear-gradient(to right,var(--a5),transparent)"></div>
+      <div class="card-preview-wrap">
+        <div class="card-preview prev-noir preview-inner">
+          <span class="prev-title">Gatsby</span>
+          <span class="prev-sub">Spectacle · Gatsby</span>
+        </div>
+        <div class="card-overlay" style="background:rgba(201,168,76,.05)">
+          <button class="card-launch" style="background:var(--a5);color:#080808">Ouvrir le site →</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <div class="card-info">
+            <p class="card-num">07 · Spectacle Thématique</p>
+            <p class="card-title">Spectacle thématique Gatsby</p>
+          </div>
+          <div class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></div>
+        </div>
+        <p class="card-desc">Noir profond + Or champagne · Cormorant Garamond · Motifs Art Déco · Spectacles Gatsby & Crooner · Élégance pure</p>
+        <div class="card-tags">
+          <span class="ctag" style="color:var(--a5);border-color:rgba(201,168,76,.22)">#C9A84C Or</span>
+          <span class="ctag" style="color:#E8E8E8;border-color:rgba(255,255,255,.1)">#0A0A0A Noir</span>
+          <span class="ctag" style="color:#F0EBE0;border-color:rgba(240,235,224,.1)">#F0EBE0 Ivoire</span>
+        </div>
+        <div class="card-footer">
+          <span class="card-style-badge" style="background:rgba(201,168,76,.08);color:var(--a5);border:1px solid rgba(201,168,76,.18)">Sombre · Art Déco</span>
+        </div>
+      </div>
+    </div>
+
+    
+
+  </div><!-- /cards-zone -->
+
+  <!-- ── FOOTER ── -->
+  <div class="portal-footer fi">
+    <div class="pf-left">© 2026 U Swing Studio · <span>Tous les sites créés par Claude · Anthropic</span></div>
+    <div class="pf-right">
+      <span class="h-status" style="display:flex;align-items:center;gap:6px"><div class="h-dot" style="width:5px;height:5px"></div>8 sites actifs</span>
+    </div>
+  </div>
+
+</div><!-- /portal -->
+
+<script>
+/* ── CURSOR ── */
+const cur=document.getElementById('cur'),ring=document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cur.style.left=mx+'px';cur.style.top=my+'px';
+});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('.site-card').forEach(c=>{
+  c.addEventListener('mouseenter',()=>cur.classList.add('big'));
+  c.addEventListener('mouseleave',()=>cur.classList.remove('big'));
+});
+
+/* ── BACKGROUND CANVAS — floating particles + grid ── */
+const cv=document.getElementById('bg-canvas'),ctx=cv.getContext('2d');
+let W,H;
+function rsz(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight}
+rsz();window.addEventListener('resize',rsz);
+
+const COLORS=['rgba(0,229,255,','rgba(200,241,53,','rgba(255,107,43,','rgba(201,168,76,','rgba(43,255,168,'];
+const pts=Array.from({length:60},()=>({
+  x:Math.random()*window.innerWidth,
+  y:Math.random()*window.innerHeight,
+  r:Math.random()*1.4+.4,
+  dx:(Math.random()-.5)*.25,
+  dy:(Math.random()-.5)*.25,
+  c:COLORS[Math.floor(Math.random()*COLORS.length)],
+  a:Math.random()*.35+.05
+}));
+
+/* Floating light orbs */
+const orbs=[
+  {x:.2,y:.3,r:300,c:'rgba(0,229,255,',a:.025,dx:.0002,dy:.0003},
+  {x:.7,y:.6,r:250,c:'rgba(200,241,53,',a:.02, dx:-.0003,dy:.0002},
+  {x:.5,y:.15,r:200,c:'rgba(255,107,43,',a:.022,dx:.0002,dy:-.0002},
+  {x:.85,y:.2,r:180,c:'rgba(201,168,76,',a:.02, dx:-.0003,dy:.0003},
+];
+let t=0;
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  /* Grid */
+  ctx.strokeStyle='rgba(255,255,255,.018)';ctx.lineWidth=.5;
+  const gs=80;
+  for(let x=0;x<W;x+=gs){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}
+  for(let y=0;y<H;y+=gs){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+
+  /* Orbs */
+  orbs.forEach(o=>{
+    const cx=(o.x+Math.sin(t*o.dx*1000)*0.06)*W;
+    const cy=(o.y+Math.cos(t*o.dy*1000)*0.05)*H;
+    const g=ctx.createRadialGradient(cx,cy,0,cx,cy,o.r);
+    g.addColorStop(0,o.c+o.a+')');g.addColorStop(1,o.c+'0)');
+    ctx.beginPath();ctx.arc(cx,cy,o.r,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+  });
+
+  /* Particles */
+  pts.forEach(p=>{
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=p.c+p.a+')';ctx.fill();
+    p.x+=p.dx;p.y+=p.dy;
+    if(p.x<0||p.x>W)p.dx*=-1;
+    if(p.y<0||p.y>H)p.dy*=-1;
+  });
+  t+=16;requestAnimationFrame(draw);
+}
+draw();
+
+/* ── OPEN SITE ── */
+function openSite(file){window.open(file,'_blank')}
+
+/* ── FILTER ── */
+const filterBtns=document.querySelectorAll('.fb-btn');
+const cards=document.querySelectorAll('.site-card');
+filterBtns.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    filterBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const f=btn.dataset.filter;
+    cards.forEach(c=>{
+      const tags=c.dataset.tags||'';
+      const show=f==='all'||tags.includes(f);
+      c.style.opacity=show?'1':'0.2';
+      c.style.pointerEvents=show?'auto':'none';
+      c.style.transition='opacity .4s';
+    });
+  });
+});
+
+/* ── SCROLL REVEAL ── */
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target)}
+}),{threshold:.08});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+
+/* ── CARD HOVER TILT (subtle) ── */
+cards.forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const dx=(e.clientX-r.left-r.width/2)/r.width;
+    const dy=(e.clientY-r.top-r.height/2)/r.height;
+    card.style.transform=`perspective(800px) rotateY(${dx*4}deg) rotateX(${-dy*3}deg) translateZ(4px)`;
+  });
+  card.addEventListener('mouseleave',()=>{
+    card.style.transform='';
+    card.style.transition='transform .5s cubic-bezier(.16,1,.3,1),background .3s';
+  });
+});
+
+
+const text = document.querySelector('.outline');
+const starCount = 10; // Nombre d'étoiles souhaité
+
+for (let i = 0; i < starCount; i++) {
+  const star = document.createElement('span');
+  star.innerHTML = '★';
+  star.className = 'star';
+  
+  // Positions aléatoires (en pourcentage)
+  const x = Math.random() * 400;
+  const y = Math.random() * -500;
+  
+  // Délai d'animation aléatoire pour éviter qu'elles clignotent en même temps
+  const delay = Math.random() * 2;
+  const duration = 1 + Math.random() * 2;
+
+  star.style.left = `${x}%`;
+  star.style.top = `${y}%`;
+  star.style.animationDelay = `${delay}s`;
+  star.style.animationDuration = `${duration}s`;
+
+  text.appendChild(star);
+}
+
+</script>
+</body>
+</html>
