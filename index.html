@@ -12,7 +12,7 @@
   --bg2:   #0C0D14;
   --bg3:   #11121C;
   --bdr:   rgba(255,255,255,.06);
-  --ink:   #E8ECF5;
+  --ink:   #f1f5e8;
   --muted: #3A3D52;
   --ash:   #6A6E85;
 
@@ -51,6 +51,7 @@ body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opa
 header{padding:2.5rem 5%;display:flex;justify-content:space-between;align-items:center;}
 .h-logo{font-family:'Unbounded',sans-serif;font-size:2.2rem;font-weight:900;letter-spacing:-.04em;color:var(--ink)}
 .h-logo em{color:transparent;-webkit-text-stroke:1px rgba(156,255,0,0.552);font-style:normal}
+.h-logo.ulogo{color: #bbff00;}
 .h-meta{display:flex;align-items:center;gap:1.5rem}
 .h-dot{width:6px;height:6px;border-radius:50%;background:#2BFFA8;box-shadow:0 0 10px #2BFFA8;animation:blink 2s ease-in-out infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
@@ -281,7 +282,7 @@ header{padding:2.5rem 5%;display:flex;justify-content:space-between;align-items:
 
   <!-- ── HEADER ── -->
   <header>
-    <div class="h-logo">U <em>Swing</em> Studio</div>
+    <div class="h-logo ulogo">U <em>Swing</em> Band</div>
     <div class="h-meta">
       <div class="h-dot"></div>
       <span class="h-status">5 sites disponibles</span>
